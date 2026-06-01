@@ -674,13 +674,7 @@ export function FundModal({ agent, onClose, onSuccess }: FundModalProps) {
 
 function AssetIcon({ asset }: { asset: AssetItem }) {
     if (asset.kind === 'ton') {
-        return (
-            <div className="flex h-5 w-5 items-center justify-center rounded-full bg-accent">
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-                </svg>
-            </div>
-        );
+        return <img src="/icons/ton.png" alt="" className="h-5 w-5 rounded-full object-cover" />;
     }
 
     if (asset.imageUrl) {

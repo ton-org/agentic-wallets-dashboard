@@ -20,7 +20,7 @@ import { useAddress, useAppKit, useBalanceByAddress, useNetwork } from '@ton/app
 import { ArrowLeft, AlertTriangle, Check, CheckCircle2, Copy, Pencil, X } from 'lucide-react';
 import { toast } from 'sonner';
 
-import { useAgentActivity, useAgentOperations, useAgents, useAgentsStore } from '@/features/agents';
+import { useAgentActivity, useAgentLimits, useAgentLimitsUsage, useAgentOperations, useAgents, useAgentsStore } from '@/features/agents';
 import type { AgentWallet } from '@/features/agents';
 import { StatusDot } from '@/components/shared/status-dot';
 import { CopyableAddress, CopyableValue } from '@/components/shared/copyable-address';
@@ -30,6 +30,8 @@ import { FundModal } from '@/components/modals/fund-modal';
 import { WithdrawModal } from '@/components/modals/withdraw-modal';
 import { RevokeModal } from '@/components/modals/revoke-modal';
 import { RenameModal } from '@/components/modals/rename-modal';
+import { LimitsModal } from '@/components/modals/limits-modal';
+import { LimitsCard } from '@/components/dashboard/limits-card';
 import { ChangePublicKeyModal } from '@/components/modals/change-public-key-modal';
 import { UnexpectedActivityModal } from '@/components/modals/unexpected-activity-modal';
 import { RemoveExtensionsModal } from '@/components/modals/remove-extensions-modal';
@@ -158,12 +160,15 @@ export function AgentDetailPage() {
         agent?.address ?? null,
         agent?.ownerAddress ?? null,
     );
+    const { limits, isLoading: isLimitsLoading, hashMismatch: limitsHashMismatch } = useAgentLimits(agent);
+    const { usage: limitsUsage, isLoading: isLimitsUsageLoading } = useAgentLimitsUsage(agent, limits);
     const lastActivityMarkerRef = useRef<string | null>(null);
 
     const [showFund, setShowFund] = useState(false);
     const [showWithdraw, setShowWithdraw] = useState(false);
     const [showRevoke, setShowRevoke] = useState(false);
     const [showRename, setShowRename] = useState(false);
+    const [showLimits, setShowLimits] = useState(false);
     const [showChangePublicKey, setShowChangePublicKey] = useState(false);
     const [showRemoveExtensions, setShowRemoveExtensions] = useState(false);
     const [showUnexpected, setShowUnexpected] = useState(false);
@@ -516,6 +521,16 @@ export function AgentDetailPage() {
                 <InfoRow label="Source">{agent.source}</InfoRow>
             </div>
 
+            <LimitsCard
+                limits={limits}
+                usage={limitsUsage}
+                isLoading={isLimitsLoading}
+                isUsageLoading={isLimitsUsageLoading}
+                isOwner={isOwner}
+                hashMismatch={limitsHashMismatch}
+                onEdit={() => setShowLimits(true)}
+            />
+
             {hasExtensions && (
                 <div className="mb-8 rounded-2xl border border-white/[0.06] bg-white/[0.02] p-5 sm:p-6">
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
@@ -586,6 +601,14 @@ export function AgentDetailPage() {
             />
             <RevokeModal agent={showRevoke ? agent : null} onClose={() => setShowRevoke(false)} onSuccess={refresh} />
             <RenameModal agent={showRename ? agent : null} onClose={() => setShowRename(false)} onSuccess={refresh} />
+            <LimitsModal
+                agent={showLimits ? agent : null}
+                currentLimits={limits}
+                onClose={() => setShowLimits(false)}
+                onSuccess={async () => {
+                    await Promise.all([refresh(), refetchFallbackAgent()]);
+                }}
+            />
             <ChangePublicKeyModal
                 agent={showChangePublicKey ? agent : null}
                 initialPublicKey={deepLinkedPublicKey}

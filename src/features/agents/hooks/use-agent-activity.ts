@@ -11,9 +11,16 @@
 import { useQuery } from '@tanstack/react-query';
 import { useAppKit, useNetwork } from '@ton/appkit-react';
 
+import { Cell } from '@ton/core';
+
 import { ENV_AGENTIC_ACTIVITY_POLL_MS } from '@/core/configs/env';
 import { isSameTonAddress } from '@/features/agents/lib/address';
 import { mapWithConcurrency } from '@/features/agents/lib/async';
+import {
+    fetchAccountTransactionsWithBody,
+    normalizeTxHash,
+} from '@/features/agents/lib/account-transactions';
+import { parseLimitsDictFromMessageBody } from '@/features/agents/lib/limits-codec';
 
 type ActivityDirection = 'incoming' | 'outgoing' | 'neutral';
 type SwapProtocol = 'stonfi' | 'dedust' | 'other';
@@ -463,6 +470,43 @@ function secondarySortWeight(item: AgentActivityItem): number {
     return 1;
 }
 
+/** Newest pages to scan when refining ChangeNftContent labels (set-limits vs rename). */
+const LIMITS_LABEL_SCAN_LIMIT = 50;
+
+/**
+ * Set-limits and rename share the ChangeNftContent opcode (0x1a0b9d51), so opcode
+ * alone can't tell them apart in the events feed (which omits the message body).
+ * Fetch the recent transactions with bodies and flag, by transaction hash, those
+ * whose body carries a non-empty `limitsDict` — those are limits updates.
+ */
+async function findLimitsUpdateTxHashes(
+    client: Parameters<typeof fetchAccountTransactionsWithBody>[0],
+    network: { chainId: string },
+    address: string,
+): Promise<Set<string>> {
+    const limitsTxHashes = new Set<string>();
+    try {
+        const transactions = await fetchAccountTransactionsWithBody(client, network, address, LIMITS_LABEL_SCAN_LIMIT, 0);
+        for (const transaction of transactions) {
+            const body = transaction.inMessage?.messageContent?.body;
+            if (!body || !transaction.hash) {
+                continue;
+            }
+            try {
+                const dict = parseLimitsDictFromMessageBody(Cell.fromBase64(body));
+                if (dict && dict.size > 0) {
+                    limitsTxHashes.add(transaction.hash);
+                }
+            } catch {
+                // not a parseable ChangeNftContent-with-limits body; leave as a rename
+            }
+        }
+    } catch {
+        // best-effort label refinement; fall back to the default "Set NFT content" label
+    }
+    return limitsTxHashes;
+}
+
 export function useAgentActivity(agentAddress: string | null, ownerAddress: string | null = null) {
     const appKit = useAppKit();
     const network = useNetwork();
@@ -484,6 +528,19 @@ export function useAgentActivity(agentAddress: string | null, ownerAddress: stri
             const response = await client.getEvents({ account: agentAddress, limit: 20, offset: 0 });
             const events = response.events ?? [];
             const items: AgentActivityItem[] = [];
+
+            // ChangeNftContent (rename) and set-limits share an opcode; refine the
+            // label only when a ChangeNftContent action is actually present.
+            const hasChangeNftContent = (events as any[]).some((event) =>
+                (Array.isArray(event?.actions) ? event.actions : []).some(
+                    (action: any) =>
+                        (normalizeOpcode(action?.SmartContractExec?.operation) ||
+                            normalizeOpcode(action?.ContractDeploy?.operation)) === OP_CHANGE_NFT_CONTENT,
+                ),
+            );
+            const limitsUpdateTxHashes = hasChangeNftContent
+                ? await findLimitsUpdateTxHashes(client, network, agentAddress)
+                : new Set<string>();
 
             const nftImageCache = new Map<string, string | null>();
 
@@ -739,7 +796,11 @@ export function useAgentActivity(agentAddress: string | null, ownerAddress: stri
                             }
                             isAgentOperation = true;
                         } else if (opcode === OP_CHANGE_NFT_CONTENT) {
-                            actionLabel = 'Rename agent';
+                            const normalizedTxHash = normalizeTxHash(baseTxHash);
+                            actionLabel =
+                                normalizedTxHash && limitsUpdateTxHashes.has(normalizedTxHash)
+                                    ? 'Update transaction limits'
+                                    : 'Set NFT content';
                             summary = actionLabel;
                             actor = 'user';
                             isAgentOperation = true;

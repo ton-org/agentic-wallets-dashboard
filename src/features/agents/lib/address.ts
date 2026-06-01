@@ -20,6 +20,16 @@ export function normalizeTonAddress(address: string | undefined | null): string 
     }
 }
 
+/**
+ * Reduce an address to its canonical raw form (`workchain:hash`) for equality
+ * comparison, or `null` when the input is not a valid address. Matches the MCP
+ * `utils/address.ts` `normalizeAddressForComparison`, which the ported limits
+ * codec / spend-window modules depend on.
+ */
+export function normalizeAddressForComparison(value: string | undefined | null): string | null {
+    return normalizeTonAddress(value);
+}
+
 export function isSameTonAddress(a: string | undefined | null, b: string | undefined | null): boolean {
     const na = normalizeTonAddress(a);
     const nb = normalizeTonAddress(b);
