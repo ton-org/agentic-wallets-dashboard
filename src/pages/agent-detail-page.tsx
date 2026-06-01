@@ -265,6 +265,13 @@ export function AgentDetailPage() {
             queryKey: getNFTsQueryOptions(appKit, queryScope).queryKey,
             exact: true,
         });
+        // Limits + spend bars are derived from transaction history (no
+        // refetchInterval of their own), so refresh them whenever new activity
+        // lands. Prefix match covers the hash tail of the shared query key; the
+        // single query feeds both the decoded limits and the spend usage.
+        void queryClient.invalidateQueries({
+            queryKey: ['agent-limits-data', network?.chainId ?? null, agent.address],
+        });
     }, [agent, appKit, latestActivityMarker, network, queryClient]);
 
     useEffect(() => {

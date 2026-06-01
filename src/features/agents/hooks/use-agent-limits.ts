@@ -8,77 +8,21 @@
 
 import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import type { UseQueryResult } from '@tanstack/react-query';
 import { useAppKit, useJettonsByAddress, useNetwork } from '@ton/appkit-react';
-import { Cell } from '@ton/core';
 
 import type { AgentWallet } from '../types';
 import { extractLimitsHashFromMetadata } from '../lib/metadata';
-import { fetchAccountTransactionsWithBody } from '../lib/account-transactions';
-import {
-    computeLimitsHash,
-    limitsDictToStored,
-    parseLimitsDictFromMessageBody,
-    TON_ASSET_KEY,
-} from '../lib/limits-codec';
-import { formatWindowLabel } from '../lib/limits-constants';
+import { fetchLimitsChainData } from '../lib/limits-chain-data';
+import type { LimitsChainData } from '../lib/limits-chain-data';
+import { TON_ASSET_KEY } from '../lib/limits-codec';
+import { formatWindowLabel, shortenAssetKey } from '../lib/limits-constants';
 import type { AssetLimitView, LimitsView, StoredLimits, WindowLimitView } from '../lib/limits-types';
-
-/** Page size and cap for scanning history for the latest limits-change transaction. */
-const LIMITS_HISTORY_PAGE = 100;
-const LIMITS_HISTORY_MAX_PAGES = 5;
 
 interface JettonMeta {
     symbol: string;
     decimals: number;
     imageUrl?: string;
-}
-
-interface DecodedLimits {
-    stored: StoredLimits;
-    /** Hash of the decoded dict, to verify against the on-chain `limits_hash`. */
-    hash: string;
-}
-
-function shortenAssetKey(assetKey: string): string {
-    return assetKey.length > 12 ? `${assetKey.slice(0, 4)}…${assetKey.slice(-4)}` : assetKey;
-}
-
-/**
- * Scan account history (newest first) for the most recent ChangeNftContent
- * transaction that carries a non-empty `limitsDict`, mirroring MCP
- * `syncLimitsFromChain`. Returns the decoded limits and the dict's hash.
- */
-async function decodeLimitsFromHistory(
-    fetchPage: (limit: number, offset: number) => Promise<Array<{ inMessage?: { messageContent?: { body?: string | null } | null } | null }>>,
-): Promise<DecodedLimits | null> {
-    for (let page = 0; page < LIMITS_HISTORY_MAX_PAGES; page += 1) {
-        const transactions = await fetchPage(LIMITS_HISTORY_PAGE, page * LIMITS_HISTORY_PAGE);
-        if (transactions.length === 0) {
-            break;
-        }
-
-        for (const transaction of transactions) {
-            const body = transaction.inMessage?.messageContent?.body;
-            if (!body) {
-                continue;
-            }
-            let dict;
-            try {
-                dict = parseLimitsDictFromMessageBody(Cell.fromBase64(body));
-            } catch {
-                continue;
-            }
-            if (dict && dict.size > 0) {
-                return { stored: limitsDictToStored(dict), hash: computeLimitsHash(dict) };
-            }
-        }
-
-        if (transactions.length < LIMITS_HISTORY_PAGE) {
-            break;
-        }
-    }
-
-    return null;
 }
 
 function buildLimitsView(stored: StoredLimits, hashHex: string, jettonMeta: Map<string, JettonMeta>): LimitsView {
@@ -123,6 +67,36 @@ function buildLimitsView(stored: StoredLimits, hashHex: string, jettonMeta: Map<
     return { hashHex, assets, maxWindowSeconds };
 }
 
+/**
+ * Shared query that fetches account history once and derives both the decoded
+ * limits and the rolling-window spend from the same transactions. `useAgentLimits`
+ * and `useAgentLimitsUsage` both subscribe to this with an identical query key, so
+ * React Query performs a single fetch+compute no matter how many limits hooks are
+ * mounted — the spend bars and the decoded config can never disagree on history.
+ */
+export function useAgentLimitsChainData(agent: AgentWallet | null): UseQueryResult<LimitsChainData> {
+    const appKit = useAppKit();
+    const network = useNetwork();
+
+    const hashHex = agent ? extractLimitsHashFromMetadata(agent.nftItemContent) : null;
+    const address = agent?.address ?? null;
+
+    return useQuery({
+        queryKey: ['agent-limits-data', network?.chainId ?? null, address, hashHex],
+        enabled: !!network && !!address && !!hashHex,
+        staleTime: 15_000,
+        retry: false,
+        refetchOnWindowFocus: false,
+        queryFn: async (): Promise<LimitsChainData> => {
+            if (!network || !address) {
+                return { decoded: null, usage: {} };
+            }
+            const client = appKit.networkManager.getClient(network);
+            return fetchLimitsChainData(client, network, address);
+        },
+    });
+}
+
 export interface UseAgentLimitsResult {
     limits: LimitsView | null;
     isLoading: boolean;
@@ -136,7 +110,6 @@ export interface UseAgentLimitsResult {
  * latest limits-change transaction and verified against the hash.
  */
 export function useAgentLimits(agent: AgentWallet | null): UseAgentLimitsResult {
-    const appKit = useAppKit();
     const network = useNetwork();
 
     const hashHex = agent ? extractLimitsHashFromMetadata(agent.nftItemContent) : null;
@@ -148,22 +121,7 @@ export function useAgentLimits(agent: AgentWallet | null): UseAgentLimitsResult 
         query: { enabled: !!address && !!hashHex },
     });
 
-    const query = useQuery({
-        queryKey: ['agent-limits', network?.chainId ?? null, address, hashHex],
-        enabled: !!network && !!address && !!hashHex,
-        staleTime: 30_000,
-        retry: false,
-        refetchOnWindowFocus: false,
-        queryFn: async (): Promise<DecodedLimits | null> => {
-            if (!network || !address) {
-                return null;
-            }
-            const client = appKit.networkManager.getClient(network);
-            return decodeLimitsFromHistory((limit, offset) =>
-                fetchAccountTransactionsWithBody(client, network, address, limit, offset),
-            );
-        },
-    });
+    const query = useAgentLimitsChainData(agent);
 
     const jettonMeta = useMemo(() => {
         const map = new Map<string, JettonMeta>();
@@ -181,13 +139,14 @@ export function useAgentLimits(agent: AgentWallet | null): UseAgentLimitsResult 
     }, [jettonsResponse?.jettons]);
 
     const limits = useMemo<LimitsView | null>(() => {
-        if (!hashHex || !query.data) {
+        if (!hashHex || !query.data?.decoded) {
             return null;
         }
-        return buildLimitsView(query.data.stored, hashHex, jettonMeta);
+        return buildLimitsView(query.data.decoded.stored, hashHex, jettonMeta);
     }, [hashHex, query.data, jettonMeta]);
 
-    const hashMismatch = Boolean(hashHex) && query.isSuccess && (!query.data || query.data.hash !== hashHex);
+    const hashMismatch =
+        Boolean(hashHex) && query.isSuccess && (!query.data?.decoded || query.data.decoded.hash !== hashHex);
 
     return {
         limits,

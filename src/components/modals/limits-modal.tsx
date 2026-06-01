@@ -19,7 +19,7 @@ import type { AgentWallet } from '@/features/agents';
 import { useAgentOperations } from '@/features/agents';
 import { storedToLimitsDict, TON_ASSET_KEY } from '@/features/agents/lib/limits-codec';
 import type { LimitsView, StoredLimits } from '@/features/agents/lib/limits-types';
-import { WINDOW_PRESETS } from '@/features/agents/lib/limits-constants';
+import { shortenAssetKey, WINDOW_PRESETS } from '@/features/agents/lib/limits-constants';
 import { formatUnitsTrimmed, parseUiAmountToUnits } from '@/features/agents/lib/amount';
 
 interface LimitsModalProps {
@@ -129,7 +129,7 @@ export function LimitsModal({ agent, currentLimits, onClose, onSuccess }: Limits
             }
             byKey.set(jetton.address, {
                 key: jetton.address,
-                symbol: jetton.info?.symbol ?? `${jetton.address.slice(0, 4)}…${jetton.address.slice(-4)}`,
+                symbol: jetton.info?.symbol ?? shortenAssetKey(jetton.address),
                 decimals: jetton.decimalsNumber ?? 9,
                 imageUrl: jetton.info?.image?.url,
             });

@@ -424,6 +424,33 @@ export async function getAgentWalletState(
     return parseAgentWalletStateData(parseCellFromBase64Boc(state.data), walletAddress);
 }
 
+/** Seconds an owner-signed operation request stays valid after it is built. */
+const OWNER_OP_VALID_UNTIL_SECONDS = 600;
+
+/**
+ * Assemble a single-message owner operation request: one internal message to the
+ * agent carrying `payload`, funded with `gasAmountNano`. Shared by the rename /
+ * set-limits / clear-limits builders, which differ only in the payload they carry.
+ */
+function buildOwnerOpRequest(params: {
+    agentAddress: string;
+    gasAmountNano: bigint;
+    networkChainId: string;
+    payload: Cell;
+}): TransactionRequest {
+    return {
+        network: { chainId: params.networkChainId },
+        validUntil: Math.floor(Date.now() / 1000) + OWNER_OP_VALID_UNTIL_SECONDS,
+        messages: [
+            {
+                address: params.agentAddress,
+                amount: params.gasAmountNano.toString(),
+                payload: cellToBase64(params.payload),
+            },
+        ],
+    };
+}
+
 export function buildRenameAgentTransaction(params: {
     agentAddress: string;
     queryId: bigint;
@@ -431,18 +458,12 @@ export function buildRenameAgentTransaction(params: {
     updatedNftItemContent: Cell;
     networkChainId: string;
 }): TransactionRequest {
-    const payload = createChangeNftContentBody(params.queryId, params.updatedNftItemContent);
-    return {
-        network: { chainId: params.networkChainId },
-        validUntil: Math.floor(Date.now() / 1000) + 600,
-        messages: [
-            {
-                address: params.agentAddress,
-                amount: params.gasAmountNano.toString(),
-                payload: cellToBase64(payload),
-            },
-        ],
-    };
+    return buildOwnerOpRequest({
+        agentAddress: params.agentAddress,
+        gasAmountNano: params.gasAmountNano,
+        networkChainId: params.networkChainId,
+        payload: createChangeNftContentBody(params.queryId, params.updatedNftItemContent),
+    });
 }
 
 /**
@@ -483,17 +504,12 @@ export function buildSetLimitsTransaction(params: {
     const payload = createChangeNftContentWithLimitsBody(params.queryId, content, params.limitsDict);
     return {
         limitsHash,
-        request: {
-            network: { chainId: params.networkChainId },
-            validUntil: Math.floor(Date.now() / 1000) + 600,
-            messages: [
-                {
-                    address: params.agentAddress,
-                    amount: params.gasAmountNano.toString(),
-                    payload: cellToBase64(payload),
-                },
-            ],
-        },
+        request: buildOwnerOpRequest({
+            agentAddress: params.agentAddress,
+            gasAmountNano: params.gasAmountNano,
+            networkChainId: params.networkChainId,
+            payload,
+        }),
     };
 }
 
@@ -510,18 +526,12 @@ export function buildClearLimitsTransaction(params: {
     networkChainId: string;
 }): TransactionRequest {
     const content = buildContentWithLimitsHash(params.currentContent, null);
-    const payload = createChangeNftContentBody(params.queryId, content);
-    return {
-        network: { chainId: params.networkChainId },
-        validUntil: Math.floor(Date.now() / 1000) + 600,
-        messages: [
-            {
-                address: params.agentAddress,
-                amount: params.gasAmountNano.toString(),
-                payload: cellToBase64(payload),
-            },
-        ],
-    };
+    return buildOwnerOpRequest({
+        agentAddress: params.agentAddress,
+        gasAmountNano: params.gasAmountNano,
+        networkChainId: params.networkChainId,
+        payload: createChangeNftContentBody(params.queryId, content),
+    });
 }
 
 export async function getPublicKey(client: ToncenterLikeClient, walletAddress: string): Promise<bigint> {

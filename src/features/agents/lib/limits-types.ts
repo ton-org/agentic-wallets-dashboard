@@ -60,17 +60,6 @@ export interface TransactionSpend {
 }
 
 /**
- * Amounts the pending (not-yet-broadcast) transaction will spend, grouped by
- * normalized asset key.
- */
-export interface PendingSpend {
-    /** Total TON outflow across all messages, in nanotons. */
-    ton: bigint;
-    /** Normalized jetton-master address -> outflow amount in base jetton units. */
-    jettons: Map<string, bigint>;
-}
-
-/**
  * Decoded mirror of the on-chain limitsDict, JSON-friendly. Mirrors the MCP
  * `StoredLimits` config shape so the dashboard and MCP agree on the decode
  * target (MCP `registry/config.ts`).

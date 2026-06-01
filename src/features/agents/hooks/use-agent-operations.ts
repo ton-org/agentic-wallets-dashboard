@@ -225,6 +225,23 @@ export function useAgentOperations() {
         throw new Error('Extension removal transaction sent, but on-chain state is not updated yet. Please refresh shortly.');
     };
 
+    const waitForLimitsHash = async (agentAddress: string, expectedHash: string | null) => {
+        if (!network) {
+            return;
+        }
+
+        const client = appKit.networkManager.getClient(network);
+        for (let attempt = 0; attempt < OPERATION_RETRY_ATTEMPTS; attempt += 1) {
+            const state = await getAgentWalletState(client, agentAddress);
+            if (extractLimitsHashFromMetadata(state.nftItemContent) === expectedHash) {
+                return;
+            }
+            await delay(OPERATION_RETRY_DELAY_MS);
+        }
+
+        throw new Error('Limits transaction sent, but on-chain state is not updated yet. Please refresh shortly.');
+    };
+
     const normalizeExtensionAddresses = (extensionAddresses: string[]) =>
         Array.from(new Set(extensionAddresses.map((address) => Address.parse(address).toString())));
 
@@ -495,16 +512,7 @@ export function useAgentOperations() {
                 networkChainId: network.chainId,
             });
             await sendTransaction(request);
-
-            for (let attempt = 0; attempt < OPERATION_RETRY_ATTEMPTS; attempt += 1) {
-                const updatedState = await getAgentWalletState(client, agent.address);
-                if (extractLimitsHashFromMetadata(updatedState.nftItemContent) === limitsHash) {
-                    return;
-                }
-                await delay(OPERATION_RETRY_DELAY_MS);
-            }
-
-            throw new Error('Set-limits transaction sent, but on-chain state is not updated yet. Please refresh shortly.');
+            await waitForLimitsHash(agent.address, limitsHash);
         });
 
     const clearAgentLimits = async (agent: AgentWallet) =>
@@ -523,16 +531,7 @@ export function useAgentOperations() {
                 networkChainId: network.chainId,
             });
             await sendTransaction(request);
-
-            for (let attempt = 0; attempt < OPERATION_RETRY_ATTEMPTS; attempt += 1) {
-                const updatedState = await getAgentWalletState(client, agent.address);
-                if (extractLimitsHashFromMetadata(updatedState.nftItemContent) === null) {
-                    return;
-                }
-                await delay(OPERATION_RETRY_DELAY_MS);
-            }
-
-            throw new Error('Clear-limits transaction sent, but on-chain state is not updated yet. Please refresh shortly.');
+            await waitForLimitsHash(agent.address, null);
         });
 
     return {

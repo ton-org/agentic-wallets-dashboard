@@ -29,6 +29,11 @@ export function usageKey(assetKey: string, windowSeconds: number): string {
     return `${assetKey}|${windowSeconds}`;
 }
 
+/** Compact fallback symbol for an asset address with no known jetton metadata (e.g. `EQAb…1xYz`). */
+export function shortenAssetKey(assetKey: string): string {
+    return assetKey.length > 12 ? `${assetKey.slice(0, 4)}…${assetKey.slice(-4)}` : assetKey;
+}
+
 const PRESET_LABEL = new Map(WINDOW_PRESETS.map((preset) => [preset.seconds, preset.label]));
 
 /** Human label for any window length (presets, or a friendly fallback). */
