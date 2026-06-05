@@ -114,7 +114,7 @@ export function AdvancedConfig() {
                 </div>
             </CollapsibleSection>
 
-            <CollapsibleSection title="Testnet first (frcommended)">
+            <CollapsibleSection title="Testnet first (recommended)">
                 <div className="flex flex-col gap-3">
                     <p className="text-sm text-neutral-400">
                         We recommend starting on testnet while experimenting. Add the{' '}
