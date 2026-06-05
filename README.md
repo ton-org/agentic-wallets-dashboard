@@ -1,6 +1,6 @@
 # Agentic Wallets Dashboard
 
-**TON Agentic wallet** is a wallet designed specifically for AI agents. It allows an agent to interact autonomously with the TON blockchain while keeping the user in full control of the wallet.
+**TON Agentic Wallet** is a wallet designed specifically for AI agents. It allows an agent to interact autonomously with the TON blockchain while keeping the user in full control of the wallet.
 
 This dashboard lets you manage agentic wallets, create new ones, deposit and withdraw assets, change the operator key, revoke access, and view an activity feed for each agent.
 
@@ -28,7 +28,7 @@ The app starts at `http://localhost:5173`.
 
 2. Creating an agent (`/create`):
 - enter the `origin operator public key`, name, and source;
-- calculate the index and deterministic agent wallet address;
+- calculate the index and deterministic agentic wallet address;
 - deploy and perform the initial funding with TON and/or assets in a single flow.
 
 3. Agent operations:

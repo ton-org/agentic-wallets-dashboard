@@ -17,7 +17,7 @@ const fundingMethods = [
     {
         icon: LayoutDashboard,
         title: 'From the dashboard',
-        description: 'Open your agent\'s page and use the Fund button to send TON, Jettons or NFTs.',
+        description: 'Open your agent\'s page and use the Fund button to send TON, Jettons, or NFTs.',
     },
     {
         icon: Send,
@@ -30,9 +30,9 @@ export function StepFundWallet() {
     return (
         <div className="flex flex-col gap-6">
             <div>
-                <h3 className="text-xl font-bold tracking-tight">Fund the Wallet</h3>
+                <h3 className="text-xl font-bold tracking-tight">Fund the wallet</h3>
                 <p className="mt-2 text-base leading-relaxed text-neutral-400 sm:text-lg">
-                    After creation, the agent wallet needs TON to operate. There are three ways to fund it:
+                    After creation, the agentic wallet needs TON to operate. There are three ways to fund it:
                 </p>
             </div>
 
@@ -59,7 +59,7 @@ export function StepFundWallet() {
                 <div className="flex flex-col gap-4 p-5">
                     <div className="flex items-start gap-3">
                         <span className="mt-0.5 shrink-0 font-mono text-xs font-bold text-amber-500">You</span>
-                        <span className="text-sm text-neutral-200">What's my agent wallet balance?</span>
+                        <span className="text-sm text-neutral-200">What's my agentic wallet balance?</span>
                     </div>
                     <div className="flex items-start gap-3">
                         <span className="mt-0.5 shrink-0 font-mono text-xs font-bold text-neutral-500">Agent</span>

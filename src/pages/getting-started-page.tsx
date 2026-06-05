@@ -23,8 +23,8 @@ import {
 
 const steps = [
     { number: '01', title: 'Add skills', id: 'choose-client' },
-    { number: '02', title: 'Create Wallet', id: 'create-wallet' },
-    { number: '03', title: 'Fund Wallet', id: 'fund-wallet' },
+    { number: '02', title: 'Create wallet', id: 'create-wallet' },
+    { number: '03', title: 'Fund wallet', id: 'fund-wallet' },
     { number: '04', title: 'Start using', id: 'start-using' },
     { number: '05', title: 'Dashboard', id: 'manage-dashboard' },
 ] as const;

@@ -25,4 +25,4 @@ Then ask your agent: **"Create agentic wallet"** and follow the instructions.
 
 ## Dashboard
 
-Manage your agent wallets at [agents.ton.org](https://agents.ton.org) — fund, withdraw, revoke, rotate keys.
+Manage your agentic wallets at [agents.ton.org](https://agents.ton.org) — fund, withdraw, revoke, rotate keys.

@@ -17,17 +17,17 @@ const steps = [
         number: '01',
         title: 'Add MCP skills',
         description:
-            'Add TON MCP skills to Cursor, Claude Desktop, Windsurf, Codex and others',
+            'Add TON MCP skills to Cursor, Claude Desktop, Windsurf, Codex, and other agents',
     },
     {
         number: '02',
-        title: 'Create Wallet',
+        title: 'Create a wallet',
         description:
             'Ask your AI agent to create an agentic wallet',
     },
     {
         number: '03',
-        title: 'Fund Wallet',
+        title: 'Fund the wallet',
         description:
             'Transfer funds from your main wallet to the agent’s wallet',
     },
@@ -35,7 +35,7 @@ const steps = [
         number: '04',
         title: 'Operate',
         description:
-            'Agent autonomously executes transactions using its own key',
+            'The agent autonomously executes transactions using its own key',
     },
     {
         number: '05',

@@ -29,7 +29,7 @@ export function StepCreateWallet() {
     return (
         <div className="flex flex-col gap-6">
             <div>
-                <h3 className="text-xl font-bold tracking-tight">Create your first Agentic Wallet</h3>
+                <h3 className="text-xl font-bold tracking-tight">Create your first agentic 2allet</h3>
                 <p className="mt-2 text-sm text-neutral-500">
                     Before you start, create and fund a regular TON wallet: it'll become the owner of your agentic wallet. For example, you can use Tonkeeper or wallet.ton.org.
                 </p>

@@ -80,7 +80,7 @@ export function LandingForDevelopers() {
                         </div>
 
                         <p className="text-base leading-relaxed text-neutral-400 sm:text-lg">
-                            5 simple steps and 0 lines of code. Operate: Agent autonomously
+                            5 simple steps and 0 lines of code. Operate: The agent autonomously
                             executes transactions using its own key. Monitor: Monitor all
                             transactions and wallets from a single dashboard.
                         </p>
@@ -90,7 +90,7 @@ export function LandingForDevelopers() {
                         </div>
 
                         <p className="text-xs leading-relaxed text-amber-500/60">
-                            Add TON MCP skills to Cursor, Claude Desktop, Windsurf, Codex and others
+                            Add TON MCP skills to Cursor, Claude Desktop, Windsurf, Codex, and other agents.
                         </p>
 
                         <div className="flex items-center gap-3 sm:flex-wrap">
