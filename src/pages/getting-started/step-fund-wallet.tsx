@@ -32,7 +32,7 @@ export function StepFundWallet() {
             <div>
                 <h3 className="text-xl font-bold tracking-tight">Fund the Wallet</h3>
                 <p className="mt-2 text-base leading-relaxed text-neutral-400 sm:text-lg">
-                    After creation, the agent wallet needs TON to operate. There are three ways to fund it.
+                    After creation, the agent wallet needs TON to operate. There are three ways to fund it:
                 </p>
             </div>
 

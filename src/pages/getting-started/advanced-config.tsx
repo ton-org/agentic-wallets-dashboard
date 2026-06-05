@@ -79,10 +79,10 @@ export function AdvancedConfig() {
                 <p className="text-xs font-medium uppercase tracking-widest text-amber-500">
                     Advanced
                 </p>
-                <h3 className="mt-1 text-xl font-bold tracking-tight">Configuration Reference</h3>
+                <h3 className="mt-1 text-xl font-bold tracking-tight">Configuration reference</h3>
             </div>
 
-            <CollapsibleSection title="Environment Variables">
+            <CollapsibleSection title="Environment variables">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left text-sm">
                         <thead>
@@ -105,7 +105,7 @@ export function AdvancedConfig() {
                 </div>
             </CollapsibleSection>
 
-            <CollapsibleSection title="HTTP Mode">
+            <CollapsibleSection title="HTTP mode">
                 <div className="flex flex-col gap-3">
                     <p className="text-sm text-neutral-400">
                         For developers running the MCP server as a shared service:
@@ -114,7 +114,7 @@ export function AdvancedConfig() {
                 </div>
             </CollapsibleSection>
 
-            <CollapsibleSection title="Testnet First (Recommended)">
+            <CollapsibleSection title="Testnet first (frcommended)">
                 <div className="flex flex-col gap-3">
                     <p className="text-sm text-neutral-400">
                         We recommend starting on testnet while experimenting. Add the{' '}
@@ -124,7 +124,7 @@ export function AdvancedConfig() {
                 </div>
             </CollapsibleSection>
 
-            <CollapsibleSection title="Deep Link Parameters">
+            <CollapsibleSection title="Deep link parameters">
                 <div className="flex flex-col gap-3">
                     <p className="text-sm text-neutral-400">
                         The <code className="font-mono text-xs text-neutral-300">/create</code> page accepts these query parameters (populated automatically by the agent):

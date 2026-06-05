@@ -36,9 +36,9 @@ export function StepManageDashboard() {
     return (
         <div className="flex flex-col gap-6">
             <div>
-                <h3 className="text-xl font-bold tracking-tight">Manage from Dashboard</h3>
+                <h3 className="text-xl font-bold tracking-tight">Manage from the dashboard</h3>
                 <p className="mt-2 text-base leading-relaxed text-neutral-400 sm:text-lg">
-                    Use the dashboard to oversee all your agent wallets in one place.
+                    Use the dashboard to oversee all your agent wallets in one place:
                 </p>
             </div>
 

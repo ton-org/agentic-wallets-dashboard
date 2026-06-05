@@ -17,21 +17,24 @@ const flowSteps = [
 ];
 
 const keyPoints = [
-    'The agent generates an operator key pair — it keeps the private key',
-    'You deploy the wallet contract from your own TON wallet (you are the owner)',
-    'The agent requests the address of the deployed wallet',
-    'You find the address in the dashboard and provide it to the agent',
-    'The agent can now sign transactions with its operator key',
-    'You can revoke access or withdraw funds at any time from the dashboard',
+    'The agent generates an operator key pair — it keeps the private key.',
+    'You deploy the agentic wallet contract from your regular TON wallet.',
+    'The agent requests the address of the deployed wallet.',
+    'You find the address in the dashboard and provide it to the agent.',
+    'The agent can now sign transactions with its operator key.',
+    'You can revoke access or withdraw funds at any time from the dashboard.',
 ];
 
 export function StepCreateWallet() {
     return (
         <div className="flex flex-col gap-6">
             <div>
-                <h3 className="text-xl font-bold tracking-tight">Create Your First Agentic Wallet</h3>
+                <h3 className="text-xl font-bold tracking-tight">Create your first Agentic Wallet</h3>
+                <p className="mt-2 text-sm text-neutral-500">
+                    Before you start, create and fund a regular TON wallet: it'll become the owner of your agentic wallet. For example, you can use Tonkeeper or wallet.ton.org.
+                </p>
                 <p className="mt-2 text-base leading-relaxed text-neutral-400 sm:text-lg">
-                    Tell your AI agent to create a wallet. Here's what happens under the hood.
+                    Ask your AI agent to create an agentic wallet. Here's what happens under the hood:
                 </p>
             </div>
 
@@ -54,7 +57,7 @@ export function StepCreateWallet() {
                             <p>Generating operator keys...</p>
                             <p>
                                 Please open this link to deploy the wallet:{' '}
-                                <span className="text-amber-500/70">→ [Dashboard Create Link]</span>
+                                <span className="text-amber-500/70">→ [a link to the dashboard]</span>
                             </p>
                         </div>
                     </div>

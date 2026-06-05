@@ -22,10 +22,10 @@ import {
 } from './getting-started';
 
 const steps = [
-    { number: '01', title: 'Add MCP', id: 'choose-client' },
+    { number: '01', title: 'Add skills', id: 'choose-client' },
     { number: '02', title: 'Create Wallet', id: 'create-wallet' },
     { number: '03', title: 'Fund Wallet', id: 'fund-wallet' },
-    { number: '04', title: 'Start Using', id: 'start-using' },
+    { number: '04', title: 'Start using', id: 'start-using' },
     { number: '05', title: 'Dashboard', id: 'manage-dashboard' },
 ] as const;
 

@@ -17,10 +17,10 @@ export function StepChooseClient() {
     return (
         <div className="flex flex-col gap-6">
             <div>
-                <h3 className="text-xl font-bold tracking-tight">Add TON MCP Skills</h3>
+                <h3 className="text-xl font-bold tracking-tight">Add TON MCP skills</h3>
                 <p className="mt-2 text-base leading-relaxed text-neutral-400 sm:text-lg">
                     One install path works across Cursor, Claude Desktop, Windsurf, Codex, and
-                    other MCP-compatible clients.
+                    other MCP-compatible clients:
                 </p>
             </div>
 
