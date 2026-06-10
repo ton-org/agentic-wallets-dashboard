@@ -25,7 +25,7 @@ export function UnexpectedActivityModal({ agent, onClose, onConfirm, isPending =
             <div className="space-y-4">
                 <div className="rounded-xl border border-red-500/10 bg-red-500/[0.04] px-4 py-3">
                     <p className="text-sm leading-relaxed text-red-400/90">
-                        This will mark the activity as unexpected and immediately revoke this agent wallet in one step.
+                        This will mark the activity as unexpected and immediately revoke this agentic wallet in one step.
                     </p>
                 </div>
 

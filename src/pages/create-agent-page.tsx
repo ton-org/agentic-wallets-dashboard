@@ -705,7 +705,7 @@ export function CreateAgentPage() {
                 const existingState = await getAgentWalletState(client, localAddress.toString());
                 if (existingState.isInitialized) {
                     throw new Error(
-                        `Agent wallet with this operator public key already exists: ${localAddress.toString()}`,
+                        `Agentic wallet with this operator public key already exists: ${localAddress.toString()}`,
                     );
                 }
             } catch (error) {
@@ -877,7 +877,7 @@ export function CreateAgentPage() {
             queueDeploymentNotice(localAddress.toString());
             navigate(`/agent/${localAddress.toString()}`);
         } catch (error) {
-            const message = error instanceof Error ? error.message : 'Failed to create agent wallet';
+            const message = error instanceof Error ? error.message : 'Failed to create an agentic wallet';
             trackEvent('agent_create_error', {
                 page_path: getCurrentAnalyticsPath(),
                 network: network?.chainId ?? 'unknown',
@@ -900,7 +900,7 @@ export function CreateAgentPage() {
             </Link>
 
             <div className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6">
-                <h1 className="text-2xl font-bold tracking-tight">Create Agent Wallet</h1>
+                <h1 className="text-2xl font-bold tracking-tight">Create Agentic Wallet</h1>
                 <p className="mt-2 text-sm text-neutral-500">
                     Deploy a wallet NFT and send first funding in one wallet confirmation flow.
                 </p>

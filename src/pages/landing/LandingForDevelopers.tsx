@@ -90,7 +90,7 @@ export function LandingForDevelopers() {
                         </div>
 
                         <p className="text-xs leading-relaxed text-amber-500/60">
-                            Add TON MCP skills to Cursor, Claude Desktop, Windsurf, Codex, and other agents.
+                            Add TON MCP skills to Cursor, Claude Desktop, Windsurf, Codex, and other agentic IDEs.
                         </p>
 
                         <div className="flex items-center gap-3 sm:flex-wrap">

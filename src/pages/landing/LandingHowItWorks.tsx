@@ -17,7 +17,7 @@ const steps = [
         number: '01',
         title: 'Add MCP skills',
         description:
-            'Add TON MCP skills to Cursor, Claude Desktop, Windsurf, Codex, and other agents',
+            'Add TON MCP skills to Cursor, Claude Desktop, Windsurf, Codex, and other agentic IDEs',
     },
     {
         number: '02',

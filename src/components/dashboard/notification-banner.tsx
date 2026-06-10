@@ -23,7 +23,7 @@ export function NotificationBanner({ agents, onView, onRevoke, onMarkAllKnown }:
             {agents.length > 1 && (
                 <div className="flex items-center justify-between rounded-xl border border-amber-500/10 bg-amber-500/[0.04] px-4 py-2.5">
                     <span className="text-xs text-amber-500/80">
-                        {agents.length} new agent wallet{agents.length > 1 ? 's' : ''} detected
+                        {agents.length} new agentic wallet{agents.length > 1 ? 's' : ''} detected
                     </span>
                     <button
                         onClick={onMarkAllKnown}
@@ -42,7 +42,7 @@ export function NotificationBanner({ agents, onView, onRevoke, onMarkAllKnown }:
                     <div className="h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500 animate-pulse" />
                     <div className="min-w-0 flex-1">
                         <p className="text-sm text-neutral-300">
-                            New agent wallet detected &mdash;{' '}
+                            New agentic wallet detected &mdash;{' '}
                             <span className="font-medium text-white">&ldquo;{agent.name}&rdquo;</span>
                         </p>
                         <p className="text-[10px] text-neutral-600">Created by {agent.source}</p>
