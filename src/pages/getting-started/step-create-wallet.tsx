@@ -31,7 +31,9 @@ export function StepCreateWallet() {
             <div>
                 <h3 className="text-xl font-bold tracking-tight">Create your first agentic 2allet</h3>
                 <p className="mt-2 text-sm text-neutral-500">
-                    Before you start, create and fund a regular TON wallet: it'll become the owner of your agentic wallet. For example, you can use Tonkeeper or wallet.ton.org.
+                    Before you start, create and fund a regular TON wallet: it'll become the owner of your agentic wallet. For example, you can use{' '}
+                    <a href="https://tonkeeper.com" target="_blank" rel="noopener noreferrer">Tonkeeper</a> or{' '}
+                    <a href="https://wallet.ton.org" target="_blank" rel="noopener noreferrer">wallet.ton.org</a>.
                 </p>
                 <p className="mt-2 text-base leading-relaxed text-neutral-400 sm:text-lg">
                     Ask your AI agent to create an agentic wallet. Here's what happens under the hood:

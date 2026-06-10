@@ -114,16 +114,6 @@ export function AdvancedConfig() {
                 </div>
             </CollapsibleSection>
 
-            <CollapsibleSection title="Testnet first (recommended)">
-                <div className="flex flex-col gap-3">
-                    <p className="text-sm text-neutral-400">
-                        We recommend starting on testnet while experimenting. Add the{' '}
-                        <code className="font-mono text-xs text-amber-500/70">NETWORK</code> env variable to your config:
-                    </p>
-                    <CodeBlock code={testnetConfig} title="MCP config — testnet" language="json" />
-                </div>
-            </CollapsibleSection>
-
             <CollapsibleSection title="Deep link parameters">
                 <div className="flex flex-col gap-3">
                     <p className="text-sm text-neutral-400">
