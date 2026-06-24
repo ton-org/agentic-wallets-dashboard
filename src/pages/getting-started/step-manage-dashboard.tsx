@@ -13,12 +13,12 @@ const features = [
     {
         icon: Eye,
         title: 'Monitor transactions',
-        description: 'See all agent wallet activity in real time',
+        description: 'See all agentic wallet activity in real time',
     },
     {
         icon: Wallet,
         title: 'Fund & withdraw',
-        description: 'Add or remove funds from any agent wallet',
+        description: 'Add or remove funds from any agentic wallet',
     },
     {
         icon: ShieldOff,
@@ -36,9 +36,9 @@ export function StepManageDashboard() {
     return (
         <div className="flex flex-col gap-6">
             <div>
-                <h3 className="text-xl font-bold tracking-tight">Manage from Dashboard</h3>
+                <h3 className="text-xl font-bold tracking-tight">Manage from the dashboard</h3>
                 <p className="mt-2 text-base leading-relaxed text-neutral-400 sm:text-lg">
-                    Use the dashboard to oversee all your agent wallets in one place.
+                    Use the dashboard to oversee all your agentic wallets in one place:
                 </p>
             </div>
 

@@ -79,7 +79,7 @@ export function ConnectPrompt() {
             <div className="text-center">
                 <h2 className="text-2xl font-bold tracking-tight">Connect your wallet</h2>
                 <p className="mt-2 max-w-sm text-sm text-neutral-400">
-                    Connect your TON wallet to see and manage agent wallets linked to your address.
+                    Connect your TON wallet to see and manage agentic wallets linked to your address.
                 </p>
             </div>
             <WalletButton />

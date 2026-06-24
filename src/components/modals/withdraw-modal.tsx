@@ -395,7 +395,7 @@ export function WithdrawModal({ agent, onClose, onSuccess }: WithdrawModalProps)
                         )}
 
                         <p className="text-xs leading-relaxed text-neutral-500">
-                            Choose what to withdraw from this agent wallet. If TON is not selected, only chosen
+                            Choose what to withdraw from this agentic wallet. If TON is not selected, only chosen
                             jettons/NFTs will be transferred.
                         </p>
                     </div>

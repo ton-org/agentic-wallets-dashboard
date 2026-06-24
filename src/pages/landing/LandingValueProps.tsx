@@ -22,7 +22,7 @@ const principles = [
     {
         title: 'Adaptable.',
         description:
-            'Works with any AI agent — Claude, ChatGPT, OpenClaw, Cursor and others. Share the link with the AI agent of your choice and let it do the rest',
+            'Works with Claude, ChatGPT, OpenClaw, Cursor, and other agentic IDEs. Share the link with the AI agent of your choice and let it do the rest',
     },
 ];
 

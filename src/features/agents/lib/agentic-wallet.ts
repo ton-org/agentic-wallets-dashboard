@@ -247,7 +247,7 @@ export function createWithdrawAllOutActions(
                     amount: jetton.amount,
                     destination: ownerAddress.toString(),
                     responseDestination: ownerAddress.toString(),
-                    comment: 'Withdraw jetton from agent wallet',
+                    comment: 'Withdraw jetton from agentic wallet',
                 }),
             }),
         });
@@ -264,7 +264,7 @@ export function createWithdrawAllOutActions(
                 body: createNftTransferPayload({
                     newOwner: ownerAddress.toString(),
                     responseDestination: ownerAddress.toString(),
-                    comment: 'Withdraw NFT from agent wallet',
+                    comment: 'Withdraw NFT from agentic wallet',
                 }),
             }),
         });
@@ -479,7 +479,7 @@ export async function getNftData(client: ToncenterLikeClient, walletAddress: str
     try {
         const state = await getAgentWalletState(client, walletAddress);
         if (!state.isInitialized) {
-            throw new Error('Agent wallet is not initialized');
+            throw new Error('Agentic wallet is not initialized');
         }
 
         return {
@@ -497,7 +497,7 @@ export async function getNftData(client: ToncenterLikeClient, walletAddress: str
     const [isInitialized, nftItemIndex, collectionAddress, ownerAddress, nftItemContent] = result.stack;
 
     if (!isInitialized || isInitialized.type !== 'num' || parseNum(isInitialized.value) === 0n) {
-        throw new Error('Agent wallet is not initialized');
+        throw new Error('Agentic wallet is not initialized');
     }
 
     if (!nftItemIndex || nftItemIndex.type !== 'num') {

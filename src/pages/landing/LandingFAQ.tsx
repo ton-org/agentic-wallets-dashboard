@@ -26,7 +26,7 @@ const faqs = [
     },
     {
         question: 'Can I revoke access?',
-        answer: 'Yes. You can monitor the agent wallet and revoke access at any time from the dashboard.',
+        answer: 'Yes. You can monitor the agentic wallet and revoke access at any time from the dashboard.',
     },
     {
         question: 'Which wallets and agents does it work with?',

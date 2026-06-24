@@ -22,7 +22,7 @@ const useCases: { title: string; description: ReactNode }[] = [
         title: 'DeFi agent',
         description: (
             <>
-                Automate staking, farming and rebalancing strategies –{' '}
+                Automate staking, farming, and rebalancing strategies –{' '}
                 <span className="whitespace-nowrap">each in isolated</span> wallets
             </>
         ),
