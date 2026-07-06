@@ -12,12 +12,12 @@ const fundingMethods = [
     {
         icon: Coins,
         title: 'During creation',
-        description: 'Use the "Initial TON deposit" field on the deployment page.',
+        description: 'Use the "Initial GRAM deposit" field on the deployment page.',
     },
     {
         icon: LayoutDashboard,
         title: 'From the dashboard',
-        description: 'Open your agent\'s page and use the Fund button to send TON, Jettons, or NFTs.',
+        description: 'Open your agent\'s page and use the Fund button to send GRAM, Jettons, or NFTs.',
     },
     {
         icon: Send,
@@ -32,7 +32,7 @@ export function StepFundWallet() {
             <div>
                 <h3 className="text-xl font-bold tracking-tight">Fund the wallet</h3>
                 <p className="mt-2 text-base leading-relaxed text-neutral-400 sm:text-lg">
-                    After creation, the agentic wallet needs TON to operate. There are three ways to fund it:
+                    After creation, the agentic wallet needs GRAM to operate. There are three ways to fund it:
                 </p>
             </div>
 
@@ -64,9 +64,9 @@ export function StepFundWallet() {
                     <div className="flex items-start gap-3">
                         <span className="mt-0.5 shrink-0 font-mono text-xs font-bold text-neutral-500">Agent</span>
                         <div className="flex flex-col gap-1 text-sm text-neutral-400">
-                            <p>Your agentic wallet balance is 0 TON.</p>
+                            <p>Your agentic wallet balance is 0 GRAM.</p>
                             <p>
-                                You can fund it by sending TON to:{' '}
+                                You can fund it by sending GRAM to:{' '}
                                 <code className="font-mono text-xs text-neutral-500">UQA...</code>
                             </p>
                             <p>Or open the dashboard to fund it.</p>

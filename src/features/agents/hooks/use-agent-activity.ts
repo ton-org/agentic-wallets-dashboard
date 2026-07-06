@@ -252,9 +252,9 @@ function buildAmountImpact(
     }
 
     const abs = parsed < 0n ? -parsed : parsed;
-    const formatted = symbol === 'TON' ? formatTonUi(abs) : formatJettonAmount(abs, decimals);
+    const formatted = symbol === 'GRAM' ? formatTonUi(abs) : formatJettonAmount(abs, decimals);
 
-    const resolvedIconUrl = iconUrl ?? (symbol === 'TON' ? TON_ICON_URL : undefined);
+    const resolvedIconUrl = iconUrl ?? (symbol === 'GRAM' ? TON_ICON_URL : undefined);
 
     return {
         signed: `${isPositive ? '+' : '-'}${formatted}`,
@@ -293,7 +293,7 @@ function extractSwapLegsFromJettonSwapPayload(jettonSwap: any): {
             : tonIn != null
               ? {
                     amount: formatTonUi(tonIn),
-                    symbol: 'TON',
+                    symbol: 'GRAM',
                     iconUrl: TON_ICON_URL,
                 }
               : undefined;
@@ -308,7 +308,7 @@ function extractSwapLegsFromJettonSwapPayload(jettonSwap: any): {
             : tonOut != null
               ? {
                     amount: formatTonUi(tonOut),
-                    symbol: 'TON',
+                    symbol: 'GRAM',
                     iconUrl: TON_ICON_URL,
                 }
               : undefined;
@@ -581,12 +581,12 @@ export function useAgentActivity(agentAddress: string | null, ownerAddress: stri
                         }
                         actionLabel =
                             direction === 'incoming'
-                                ? 'Received TON'
+                                ? 'Received GRAM'
                                 : direction === 'outgoing'
-                                  ? 'Sent TON'
-                                  : 'TON transfer';
+                                  ? 'Sent GRAM'
+                                  : 'GRAM transfer';
                         summary = actionLabel;
-                        amount = buildAmountImpact(action?.TonTransfer?.amount, 'TON', 9, direction === 'incoming');
+                        amount = buildAmountImpact(action?.TonTransfer?.amount, 'GRAM', 9, direction === 'incoming');
                         counterparty = chooseCounterparty(
                             action?.TonTransfer?.sender,
                             action?.TonTransfer?.recipient,

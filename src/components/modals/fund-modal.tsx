@@ -101,7 +101,7 @@ export function FundModal({ agent, onClose, onSuccess }: FundModalProps) {
     });
 
     const assets = useMemo<AssetItem[]>(() => {
-        const ton: AssetItem = { id: 'ton', kind: 'ton', label: 'TON', sublabel: 'Toncoin' };
+        const ton: AssetItem = { id: 'ton', kind: 'ton', label: 'GRAM' };
 
         const jettons: AssetItem[] = (jettonsResponse?.jettons ?? [])
             .filter((j) => hasPositiveJettonBalance(j.balance, j.decimalsNumber))
@@ -268,19 +268,19 @@ export function FundModal({ agent, onClose, onSuccess }: FundModalProps) {
 
                 if (asset.kind === 'ton') {
                     const normalized = item.amount.trim();
-                    const amountNano = parseUiAmountToUnits(normalized, 9, 'TON amount');
+                    const amountNano = parseUiAmountToUnits(normalized, 9, 'GRAM amount');
                     if (amountNano <= 0n) {
-                        throw new Error(`Enter valid TON amount`);
+                        throw new Error(`Enter valid GRAM amount`);
                     }
                     if (amountNano > maxTonForFundingNano) {
-                        throw new Error(`Maximum TON for this funding is ${maxTonForFundingString}`);
+                        throw new Error(`Maximum GRAM for this funding is ${maxTonForFundingString}`);
                     }
                     const tx = createTransferTonTransaction(appKit, {
                         recipientAddress: agentAddress,
                         amount: formatUnitsTrimmed(amountNano, 9),
                         comment: `Fund ${agentName}`,
                     });
-                    if (!tx.messages[0]) throw new Error('Failed to build TON transfer message');
+                    if (!tx.messages[0]) throw new Error('Failed to build GRAM transfer message');
                     messages.push(tx.messages[0]);
                     continue;
                 }
@@ -485,7 +485,7 @@ export function FundModal({ agent, onClose, onSuccess }: FundModalProps) {
                                                     disabled={isAssetSelectedInOtherItem('ton', item.uid)}
                                                 >
                                                     <AssetIcon asset={assets[0]} />
-                                                    <span>TON</span>
+                                                    <span>GRAM</span>
                                                 </button>
 
                                                 <button

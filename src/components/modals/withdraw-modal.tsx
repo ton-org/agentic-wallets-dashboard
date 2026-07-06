@@ -132,7 +132,7 @@ export function WithdrawModal({ agent, onClose, onSuccess }: WithdrawModalProps)
                     },
                 });
                 if (!response.ok) {
-                    throw new Error(`Failed to fetch TON price (status ${response.status})`);
+                    throw new Error(`Failed to fetch GRAM price (status ${response.status})`);
                 }
 
                 const data = (await response.json()) as {
@@ -233,8 +233,8 @@ export function WithdrawModal({ agent, onClose, onSuccess }: WithdrawModalProps)
                             className={`w-full rounded-xl border px-4 py-3 text-left transition-colors ${selectedCardClass(includeTon)}`}
                         >
                             <div>
-                                <p className="text-xs text-neutral-500">TON</p>
-                                <p className="mt-1 font-mono text-2xl font-semibold">{balanceStr} TON</p>
+                                <p className="text-xs text-neutral-500">GRAM</p>
+                                <p className="mt-1 font-mono text-2xl font-semibold">{balanceStr} GRAM</p>
                                 <p className="mt-1 text-xs text-neutral-400">
                                     {tonUsdPrice > 0 ? formatUsd(balanceValue * tonUsdPrice) : '~$—'}
                                 </p>
@@ -395,7 +395,7 @@ export function WithdrawModal({ agent, onClose, onSuccess }: WithdrawModalProps)
                         )}
 
                         <p className="text-xs leading-relaxed text-neutral-500">
-                            Choose what to withdraw from this agentic wallet. If TON is not selected, only chosen
+                            Choose what to withdraw from this agentic wallet. If GRAM is not selected, only chosen
                             jettons/NFTs will be transferred.
                         </p>
                     </div>

@@ -408,7 +408,7 @@ function getAgentCreateErrorReason(message: string): string {
     if (normalized.includes('collection address')) return 'collection_not_configured';
     if (normalized.includes('public key')) return 'invalid_public_key';
     if (normalized.includes('agentname')) return 'invalid_agent_name';
-    if (normalized.includes('ton deposit') || normalized.includes('maximum initial ton')) return 'invalid_ton_deposit';
+    if (normalized.includes('gram deposit') || normalized.includes('maximum initial gram')) return 'invalid_ton_deposit';
     if (normalized.includes('selected asset') || normalized.includes('amount for')) return 'invalid_asset_deposit';
     if (normalized.includes('already exists')) return 'agent_already_exists';
     if (normalized.includes('rejected')) return 'transaction_rejected';
@@ -664,12 +664,12 @@ export function CreateAgentPage() {
             }
 
             const tonDepositValue = tonDeposit.trim() || '0';
-            const tonDepositNano = parseUiAmountToUnits(tonDepositValue, 9, 'TON deposit');
+            const tonDepositNano = parseUiAmountToUnits(tonDepositValue, 9, 'GRAM deposit');
             if (tonDepositNano < 0n) {
-                throw new Error('TON deposit must be zero or positive');
+                throw new Error('GRAM deposit must be zero or positive');
             }
             if (tonDepositNano > initialTonDepositMaxNano) {
-                throw new Error(`Maximum initial TON deposit is ${initialTonDepositMaxString}`);
+                throw new Error(`Maximum initial GRAM deposit is ${initialTonDepositMaxString}`);
             }
 
             const nftItemIndex = calculateWalletIndex(owner, originKey, true);
@@ -724,7 +724,7 @@ export function CreateAgentPage() {
             });
 
             if (assetDeposits.length > maxAssetMessages) {
-                throw new Error(`You can add up to ${maxAssetMessages} assets (1 message reserved for deploy + TON)`);
+                throw new Error(`You can add up to ${maxAssetMessages} assets (1 message reserved for deploy + GRAM)`);
             }
 
             const callbackAssets: DeployCallbackPayload['funding']['assets'] = [];
@@ -923,8 +923,8 @@ export function CreateAgentPage() {
                     />
                     <div>
                         <div className="mb-1.5 flex items-center justify-between gap-3">
-                            <label className="block text-xs text-neutral-500">Initial TON deposit</label>
-                            <span className="text-xs text-neutral-500">Balance: {tonBalanceDisplay} TON</span>
+                            <label className="block text-xs text-neutral-500">Initial GRAM deposit</label>
+                            <span className="text-xs text-neutral-500">Balance: {tonBalanceDisplay} GRAM</span>
                         </div>
                         <div className="relative">
                             <input
