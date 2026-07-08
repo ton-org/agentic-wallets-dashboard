@@ -48,7 +48,7 @@ export function WalletHierarchySVG() {
                 OpenClaw
             </text>
             <text x="200" y="204" textAnchor="middle" fill="currentColor" fontSize="10" fontFamily="monospace" opacity="0.5">
-                50 TON
+                50 GRAM
             </text>
 
             {/* Left sub-wallet — dimmer (Claude) */}
@@ -57,7 +57,7 @@ export function WalletHierarchySVG() {
                 Claude
             </text>
             <text x="72" y="204" textAnchor="middle" fill="currentColor" fontSize="10" fontFamily="monospace" opacity="0.2">
-                120 TON
+                120 GRAM
             </text>
 
             {/* Right sub-wallet — dimmer (ChatGPT) */}
@@ -66,7 +66,7 @@ export function WalletHierarchySVG() {
                 ChatGPT
             </text>
             <text x="328" y="204" textAnchor="middle" fill="currentColor" fontSize="10" fontFamily="monospace" opacity="0.2">
-                200 TON
+                200 GRAM
             </text>
 
             {/* Withdraw dashed line going back up to master wallet */}

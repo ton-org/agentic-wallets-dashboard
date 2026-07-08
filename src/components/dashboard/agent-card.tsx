@@ -46,7 +46,7 @@ export function AgentCard({ agent, balanceNano, extrasEnabled = true, onFund, on
                     <div className="text-right">
                         <div className="flex items-center gap-1.5">
                             {isZero && <AlertTriangle size={12} className="text-amber-500" />}
-                            <span className="font-mono text-sm tabular-nums">{balanceStr} TON</span>
+                            <span className="font-mono text-sm tabular-nums">{balanceStr} GRAM</span>
                         </div>
                         {isZero && <p className="mt-0.5 text-[10px] text-amber-500/70">Out of funds</p>}
                     </div>

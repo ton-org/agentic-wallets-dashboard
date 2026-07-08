@@ -29,10 +29,10 @@ The app starts at `http://localhost:5173`.
 2. Creating an agent (`/create`):
 - enter the `origin operator public key`, name, and source;
 - calculate the index and deterministic agentic wallet address;
-- deploy and perform the initial funding with TON and/or assets in a single flow.
+- deploy and perform the initial funding with GRAM and/or assets in a single flow.
 
 3. Agent operations:
-- `fund` (TON / jetton / NFT);
+- `fund` (GRAM / jetton / NFT);
 - `withdraw all` (or selectively, depending on the UI modal);
 - `revoke` (set the operator key to `0`);
 - `change public key`;

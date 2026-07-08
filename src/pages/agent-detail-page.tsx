@@ -462,7 +462,7 @@ export function AgentDetailPage() {
                 <div className="mt-2 flex items-baseline gap-2">
                     {isZero && <AlertTriangle size={18} className="text-amber-500" />}
                     <span className="font-mono text-4xl font-semibold tabular-nums">{balanceStr}</span>
-                    <span className="text-lg text-neutral-500">TON</span>
+                    <span className="text-lg text-neutral-500">GRAM</span>
                 </div>
                 {isZero && (
                     <p className="mt-2 text-xs text-amber-500/70">

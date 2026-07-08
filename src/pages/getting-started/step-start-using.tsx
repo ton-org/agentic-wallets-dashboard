@@ -8,11 +8,11 @@
 
 const examples = [
     {
-        command: 'Send 1 TON to UQB...',
+        command: 'Send 1 GRAM to UQB...',
         result: 'Agent signs a transfer from the agentic wallet',
     },
     {
-        command: 'Swap 5 TON for USDT',
+        command: 'Swap 5 GRAM for USDT',
         result: 'Agent gets a quote, confirms with you, executes the swap',
     },
     {
@@ -21,7 +21,7 @@ const examples = [
     },
     {
         command: 'Check my balance',
-        result: 'Agent returns TON + jetton balances',
+        result: 'Agent returns GRAM + jetton balances',
     },
     {
         command: 'Get my last transactions',

@@ -33,7 +33,7 @@ const FILTERS: Array<{ key: FeedFilter; label: string }> = [
 ];
 
 const CATEGORY_LABELS: Record<AgentActivityItem['category'], string> = {
-    ton: 'TON',
+    ton: 'GRAM',
     jetton: 'Jetton',
     nft: 'NFT',
     swap: 'Swap',

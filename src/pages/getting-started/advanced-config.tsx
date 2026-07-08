@@ -38,7 +38,7 @@ const deepLinkParams = [
     { param: 'callbackUrl', description: 'URL the dashboard POSTs to after deployment' },
     { param: 'agentName', description: 'Display name for the agent' },
     { param: 'source', description: 'Source identifier (e.g., "cursor", "claude-desktop")' },
-    { param: 'tonDeposit', description: 'Suggested initial TON deposit amount' },
+    { param: 'tonDeposit', description: 'Suggested initial GRAM deposit amount' },
 ];
 
 const changePublicKeyPrefillParams = [

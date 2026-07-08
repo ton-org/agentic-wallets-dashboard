@@ -25,7 +25,7 @@ export function AgentStatsBar({ agents, totalBalanceTon }: { agents: AgentWallet
                 <span className="text-neutral-700">&middot;</span>
                 <span className="text-sm text-neutral-400">
                     Total balance:{' '}
-                    <span className="font-medium text-white">{formatUiAmountFixed(totalBalanceTon, 2)} TON</span>
+                    <span className="font-medium text-white">{formatUiAmountFixed(totalBalanceTon, 2)} GRAM</span>
                 </span>
                 {revokedCount > 0 && (
                     <>
