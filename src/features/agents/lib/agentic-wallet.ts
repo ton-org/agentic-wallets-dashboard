@@ -15,6 +15,10 @@ import {
 } from '@ton/walletkit';
 import type { TransactionRequest } from '@ton/appkit';
 
+import { computeLimitsHash } from './limits-codec';
+import type { LimitsDict } from './limits-types';
+import { buildContentWithLimitsHash } from './metadata';
+
 const OP_EXTENSION_ACTION_REQUEST = 0xed84cbf0;
 const OP_REMOVE_EXTENSION_EXTRA_ACTION = 0x03;
 const OP_DEPLOY_WALLET = 0x0609e47b;
@@ -420,6 +424,33 @@ export async function getAgentWalletState(
     return parseAgentWalletStateData(parseCellFromBase64Boc(state.data), walletAddress);
 }
 
+/** Seconds an owner-signed operation request stays valid after it is built. */
+const OWNER_OP_VALID_UNTIL_SECONDS = 600;
+
+/**
+ * Assemble a single-message owner operation request: one internal message to the
+ * agent carrying `payload`, funded with `gasAmountNano`. Shared by the rename /
+ * set-limits / clear-limits builders, which differ only in the payload they carry.
+ */
+function buildOwnerOpRequest(params: {
+    agentAddress: string;
+    gasAmountNano: bigint;
+    networkChainId: string;
+    payload: Cell;
+}): TransactionRequest {
+    return {
+        network: { chainId: params.networkChainId },
+        validUntil: Math.floor(Date.now() / 1000) + OWNER_OP_VALID_UNTIL_SECONDS,
+        messages: [
+            {
+                address: params.agentAddress,
+                amount: params.gasAmountNano.toString(),
+                payload: cellToBase64(params.payload),
+            },
+        ],
+    };
+}
+
 export function buildRenameAgentTransaction(params: {
     agentAddress: string;
     queryId: bigint;
@@ -427,18 +458,80 @@ export function buildRenameAgentTransaction(params: {
     updatedNftItemContent: Cell;
     networkChainId: string;
 }): TransactionRequest {
-    const payload = createChangeNftContentBody(params.queryId, params.updatedNftItemContent);
+    return buildOwnerOpRequest({
+        agentAddress: params.agentAddress,
+        gasAmountNano: params.gasAmountNano,
+        networkChainId: params.networkChainId,
+        payload: createChangeNftContentBody(params.queryId, params.updatedNftItemContent),
+    });
+}
+
+/**
+ * ChangeNftContent body that also carries the off-chain `limitsDict` after the
+ * content cell: `op(32) | queryId(64) | maybeRef(content) | storeDict(dict)`. The
+ * contract only reads up to the content; the trailing dict is recovered off-chain
+ * (and its hash is anchored in the content's `limits_hash` attribute).
+ */
+export function createChangeNftContentWithLimitsBody(
+    queryId: bigint,
+    newNftItemContent: Cell | null,
+    limitsDict: LimitsDict,
+): Cell {
+    return beginCell()
+        .storeUint(OP_CHANGE_NFT_CONTENT, 32)
+        .storeUint(queryId, 64)
+        .storeMaybeRef(newNftItemContent)
+        .storeDict(limitsDict)
+        .endCell();
+}
+
+/**
+ * Build the owner-signed set-limits transaction. Computes the canonical
+ * `limits_hash`, writes it into the wallet's NFT content (preserving name/date),
+ * and appends the `limitsDict` to the body. Returns the request plus the hash so
+ * the caller can poll on-chain for it.
+ */
+export function buildSetLimitsTransaction(params: {
+    agentAddress: string;
+    queryId: bigint;
+    gasAmountNano: bigint;
+    currentContent: Cell | null;
+    limitsDict: LimitsDict;
+    networkChainId: string;
+}): { request: TransactionRequest; limitsHash: string } {
+    const limitsHash = computeLimitsHash(params.limitsDict);
+    const content = buildContentWithLimitsHash(params.currentContent, limitsHash);
+    const payload = createChangeNftContentWithLimitsBody(params.queryId, content, params.limitsDict);
     return {
-        network: { chainId: params.networkChainId },
-        validUntil: Math.floor(Date.now() / 1000) + 600,
-        messages: [
-            {
-                address: params.agentAddress,
-                amount: params.gasAmountNano.toString(),
-                payload: cellToBase64(payload),
-            },
-        ],
+        limitsHash,
+        request: buildOwnerOpRequest({
+            agentAddress: params.agentAddress,
+            gasAmountNano: params.gasAmountNano,
+            networkChainId: params.networkChainId,
+            payload,
+        }),
     };
+}
+
+/**
+ * Build the owner-signed clear-limits transaction: drops the `limits_hash`
+ * attribute (preserving name/date) and sends no dict, so the MCP treats the
+ * wallet as unlimited.
+ */
+export function buildClearLimitsTransaction(params: {
+    agentAddress: string;
+    queryId: bigint;
+    gasAmountNano: bigint;
+    currentContent: Cell | null;
+    networkChainId: string;
+}): TransactionRequest {
+    const content = buildContentWithLimitsHash(params.currentContent, null);
+    return buildOwnerOpRequest({
+        agentAddress: params.agentAddress,
+        gasAmountNano: params.gasAmountNano,
+        networkChainId: params.networkChainId,
+        payload: createChangeNftContentBody(params.queryId, content),
+    });
 }
 
 export async function getPublicKey(client: ToncenterLikeClient, walletAddress: string): Promise<bigint> {

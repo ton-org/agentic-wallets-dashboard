@@ -151,3 +151,38 @@ export function buildUpdatedMetadataCell(currentContent: Cell | null, newNameRaw
 
     return beginCell().storeUint(ONCHAIN_CONTENT_PREFIX, 8).storeDict(dict).endCell();
 }
+
+/** TEP-64 onchain attribute key under which the limits integrity anchor is stored. */
+export const LIMITS_HASH_KEY = 'limits_hash';
+
+/**
+ * Read the on-chain `limits_hash` hex anchor from a wallet's NFT content cell, or
+ * `null` when no limits are set. Trimmed to match how the MCP reads it
+ * (`readOnchainMetadataValue(content, 'limits_hash')` trims the snake value).
+ */
+export function extractLimitsHashFromMetadata(content: Cell | null): string | null {
+    const value = extractStringFromMetadata(content, LIMITS_HASH_KEY);
+    if (value === null) {
+        return null;
+    }
+    const trimmed = value.trim();
+    return trimmed.length > 0 ? trimmed : null;
+}
+
+/**
+ * Clone the wallet's onchain metadata dict and set (or, when `hashHex` is null,
+ * delete) the `limits_hash` attribute, preserving every other key (name,
+ * creation_date, ...). Setting limits writes the new hash; clearing limits drops
+ * the key so the MCP treats the wallet as unlimited.
+ */
+export function buildContentWithLimitsHash(currentContent: Cell | null, hashHex: string | null): Cell {
+    const dict = parseOnchainMetadataDict(currentContent);
+    const key = onchainMetadataKey(LIMITS_HASH_KEY);
+    if (hashHex && hashHex.trim()) {
+        dict.set(key, buildOnchainMetadataValue(hashHex.trim()));
+    } else {
+        dict.delete(key);
+    }
+
+    return beginCell().storeUint(ONCHAIN_CONTENT_PREFIX, 8).storeDict(dict).endCell();
+}

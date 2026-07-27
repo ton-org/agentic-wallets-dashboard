@@ -18,6 +18,8 @@ import { useAgentsStore } from '../store/agents-store';
 import {
     cellToBase64,
     buildRenameAgentTransaction,
+    buildSetLimitsTransaction,
+    buildClearLimitsTransaction,
     createChangeOperatorBody,
     createExtensionActionRequestBody,
     createRemoveExtensionsRequestBody,
@@ -26,7 +28,8 @@ import {
     getAgentWalletState,
 } from '../lib/agentic-wallet';
 import type { WithdrawJettonAction, WithdrawNftAction } from '../lib/agentic-wallet';
-import { buildUpdatedMetadataCell, extractNameFromMetadata } from '../lib/metadata';
+import type { LimitsDict } from '../lib/limits-types';
+import { buildUpdatedMetadataCell, extractLimitsHashFromMetadata, extractNameFromMetadata } from '../lib/metadata';
 import { fetchNftInterfaces, mergeAddressBookInterfaces } from '../lib/nft-interfaces';
 import { isEligibleFundingNft } from '../lib/nft-trust';
 import { parseUint256PublicKey } from '../lib/public-key';
@@ -220,6 +223,23 @@ export function useAgentOperations() {
         }
 
         throw new Error('Extension removal transaction sent, but on-chain state is not updated yet. Please refresh shortly.');
+    };
+
+    const waitForLimitsHash = async (agentAddress: string, expectedHash: string | null) => {
+        if (!network) {
+            return;
+        }
+
+        const client = appKit.networkManager.getClient(network);
+        for (let attempt = 0; attempt < OPERATION_RETRY_ATTEMPTS; attempt += 1) {
+            const state = await getAgentWalletState(client, agentAddress);
+            if (extractLimitsHashFromMetadata(state.nftItemContent) === expectedHash) {
+                return;
+            }
+            await delay(OPERATION_RETRY_DELAY_MS);
+        }
+
+        throw new Error('Limits transaction sent, but on-chain state is not updated yet. Please refresh shortly.');
     };
 
     const normalizeExtensionAddresses = (extensionAddresses: string[]) =>
@@ -475,6 +495,45 @@ export function useAgentOperations() {
             throw new Error('Rename transaction sent, but metadata update is not visible yet. Please refresh shortly.');
         });
 
+    const setAgentLimits = async (agent: AgentWallet, limitsDict: LimitsDict) =>
+        runWithPending(async () => {
+            if (!network) {
+                throw new Error('Network is not selected');
+            }
+
+            const client = appKit.networkManager.getClient(network);
+            const state = await getAgentWalletState(client, agent.address);
+            const { request, limitsHash } = buildSetLimitsTransaction({
+                agentAddress: agent.address,
+                queryId: createQueryId(),
+                gasAmountNano: gasAmount,
+                currentContent: state.nftItemContent,
+                limitsDict,
+                networkChainId: network.chainId,
+            });
+            await sendTransaction(request);
+            await waitForLimitsHash(agent.address, limitsHash);
+        });
+
+    const clearAgentLimits = async (agent: AgentWallet) =>
+        runWithPending(async () => {
+            if (!network) {
+                throw new Error('Network is not selected');
+            }
+
+            const client = appKit.networkManager.getClient(network);
+            const state = await getAgentWalletState(client, agent.address);
+            const request = buildClearLimitsTransaction({
+                agentAddress: agent.address,
+                queryId: createQueryId(),
+                gasAmountNano: gasAmount,
+                currentContent: state.nftItemContent,
+                networkChainId: network.chainId,
+            });
+            await sendTransaction(request);
+            await waitForLimitsHash(agent.address, null);
+        });
+
     return {
         isPending: isSendTransactionPending || activeOperations > 0,
         revokeAgentWallet,
@@ -482,5 +541,7 @@ export function useAgentOperations() {
         withdrawAllFromAgentWallet,
         removeAgentExtensions,
         renameAgentWallet,
+        setAgentLimits,
+        clearAgentLimits,
     };
 }
